@@ -5,14 +5,15 @@ const wishList = new mongoose.Schema({
 
     userId: {
         type: objectId,
-        ref: "User",
+      
         require: true        
     },
-    productId:{
+    productId:
+        {
     type:objectId,
-    ref:"Product",
+
     require :true
-}
+        }
 }, { timestamps: true })
 
 

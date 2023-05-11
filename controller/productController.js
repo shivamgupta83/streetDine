@@ -1,6 +1,6 @@
-let productModel = require("../models/productModel") 
+let productModel = require("../models/productModel")
 let uploadFile = require("../aws/aws.js")
-const {mongoose}=require("mongoose");
+const { mongoose } = require("mongoose");
 let validator = require("../validation/validation.js");
 
 
@@ -10,14 +10,14 @@ const createProduct = async function (req, res) {
         let files = req.files;
 
         let { title, description } = data;
-            
+
         if (!title) return res.status(400).send({ status: false, message: "Title is mandatory" });
         if (!validator.validAll(title)) return res.status(400).send({ status: false, message: "Title is in wrong format" });
-    title = title.replace(/\s+/g, ' ').toLowerCase()
+        title = title.replace(/\s+/g, ' ').toLowerCase()
 
-    if (!description) return res.status(400).send({ status: false, message: "Description is mandatory" });
-    if (!validator.validAll(description)) return res.status(400).send({ status: false, message: "description is in wrong format" });
-    description = description.replace(/\s+/g, ' ').toLowerCase()
+        if (!description) return res.status(400).send({ status: false, message: "Description is mandatory" });
+        if (!validator.validAll(description)) return res.status(400).send({ status: false, message: "description is in wrong format" });
+        description = description.replace(/\s+/g, ' ').toLowerCase()
 
 
         if (files.length == 0) return res.status(400).send({ status: false, message: "ProductImage is required" });
@@ -35,76 +35,81 @@ const createProduct = async function (req, res) {
     }
 }
 
-const getProduct = async(req,res)=>{
-    try{
-    const id = req.params.id
-    // console.log("id",id)
-    if(id){
-        if(!mongoose.isValidObjectId(id)) return res.status(400).send({status:false,message:"product id is not valid"})
+const getProduct = async (req, res) => {
+    try {
+        const productId = req.params.productId
+        // console.log("id",id)
+        if (id) {
+            if (!mongoose.isValidObjectId(productId)) return res.status(400).send({ status: false, message: "product id is not valid" })
 
-        const data = await productModel.findById(id)
-        if(!data) return res.status(404).send({status:false,message:"pruduct is not present"})
-        if(data.isDeleted) return res.status(404).send({status:false,message:"pruduct is deleted"})
-        return res.status (200).send({status:true,message:"sucess" , data:data})
+            const data = await productModel.findById(productId)
+            if (!data) return res.status(404).send({ status: false, message: "pruduct is not present" })
+            if (data.isDeleted) return res.status(404).send({ status: false, message: "pruduct is deleted" })
+            return res.status(200).send({ status: true, message: "sucess", data: data })
+        }
+
+        else {
+            const data = await productModel.find({ isDeleted: false })
+            if (data.length == 0) return res.status(404).send({ status: false, message: "pruduct is not present" })
+            return res.status(200).send({ status: true, message: "sucess", data: data })
+        }
+
     }
-
-else {
-    const data = await productModel.find({isDeleted:false})
-    if(data.length==0) return res.status(404).send({status:false,message:"pruduct is not present"})
-    return res.status (200).send({status:true,message:"sucess" , data:data})
-}
-
-}
-catch(err){
-    return res.status(500).send({ status: false, message: err.message });
-}
-}
-
-
-const updateProduct = async(req,res)=>{
-try
-{   let data = req.body;
-    let files = req.files;
-    let id = req.params.id;
-    let { title, description } = data;
-
-  if(title)
-   { if (!validator.validAll(title)) return res.status(400).send({ status: false, message: "Title is in wrong format" });
-    title = title.replace(/\s+/g, ' ').toLowerCase()}
-
-    if(description){
-if (!validator.validAll(description)) return res.status(400).send({ status: false, message: "description is in wrong format" });
-description = description.replace(/\s+/g, ' ').toLowerCase()
+    catch (err) {
+        return res.status(500).send({ status: false, message: err.message });
     }
+}
 
-    if (files.length != 0) {
-        let productImgUrl = await uploadFile(files[0]);
-        if (!validator.validImage(productImgUrl)) {
-            return res.status(400).send({ status: false, msg: "productImage is in incorrect format" })
-        }      
-data.ImgUrl=productImgUrl;
+
+const updateProduct = async (req, res) => {
+    try {
+        let data = req.body;
+        let files = req.files;
+        let id = req.params.id;
+        let { title, description } = data;
+
+        if (title) {
+            if (!validator.validAll(title)) return res.status(400).send({ status: false, message: "Title is in wrong format" });
+            title = title.replace(/\s+/g, ' ').toLowerCase()
+        }
+
+        if (description) {
+            if (!validator.validAll(description)) return res.status(400).send({ status: false, message: "description is in wrong format" });
+            description = description.replace(/\s+/g, ' ').toLowerCase()
+        }
+
+        if (files.length != 0) {
+            let productImgUrl = await uploadFile(files[0]);
+            if (!validator.validImage(productImgUrl)) {
+                return res.status(400).send({ status: false, msg: "productImage is in incorrect format" })
+            }
+            data.ImgUrl = productImgUrl;
+        }
+
+        let updateData = await productModel.findByIdAndUpdate(id, { $set: { title: title, description: description, Image: data.ImgUrl } }, { new: true });
+        return res.status(200).send({ status: true, message: "success", updateData: updateData })
     }
-
-    let updateData = await  productModel.findByIdAndUpdate(id,{$set:{title:title,description:description,Image:data.ImgUrl}},{new:true});
-    return res.status(200).send({status:true,message:"success",updateData:updateData})
-}
-catch(err){
-    return res.status(500).send({status:false,message:err.message})
-}
+    catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
+    }
 }
 
-const deleteProduct=async(req,res)=>{
-try{    
-    let id = req.params.id;
-if(!id) return res.status(400).send({status:false,message:"id is not present"});
-if(!mongoose.isValidObjectId(id)) return res.status(400).send({status:false,message:"object id is not valid"})
+const deleteProduct = async (req, res) => {
+    try {
+        let productId = req.params.productId;
+        if (!productId) return res.status(400).send({ status: false, message: "id is not present" });
+        if (!mongoose.isValidObjectId(productId)) return res.status(400).send({ status: false, message: "object id is not valid" })
 
-let updateData = await  productModel.findByIdAndUpdate(id,{$set:{isDeleted:true}},{new:true});
-return res.status(200).send({status:true,message:"success",updateData:updateData})
-}
-catch(error){
-    return res.status(500).send({status:false,message:error.message})
-}
+const productExist= await productModel.findById(productId)
+if(!productExist) return res.status(404).send({status:false,message:"product is not exist"})
+if(productExist.isDeleted) return res.status(404).send({status:false,message:"product is deleted"})
+
+        let updateData = await productModel.findByIdAndUpdate(productId, { $set: { isDeleted: true } }, { new: true });
+        return res.status(200).send({ status: true, message: "success", updateData: updateData })
+    }
+    catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
 }
 
-module.exports={createProduct,getProduct,updateProduct,deleteProduct};
+module.exports = { createProduct, getProduct, updateProduct, deleteProduct };
