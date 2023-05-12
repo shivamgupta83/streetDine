@@ -39,7 +39,7 @@ const getProduct = async (req, res) => {
     try {
         const productId = req.params.productId
         // console.log("id",id)
-        if (id) {
+        if (productId) {
             if (!mongoose.isValidObjectId(productId)) return res.status(400).send({ status: false, message: "product id is not valid" })
 
             const data = await productModel.findById(productId)
