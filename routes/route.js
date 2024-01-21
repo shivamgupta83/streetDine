@@ -1,20 +1,35 @@
-const router=require("express").Router()
+const router = require('express').Router();
 
-const {createWishList,getWishList} = require("../controller/wishListController")
-const {createUser,loginUser}=require("../controller/userController")
-const {createProduct,getProduct,updateProduct,deleteProduct} = require("../controller/productController")
+const { payment } = require('../controller/paymentController');
+const { createUser, loginUser } = require('../controller/userController');
+const {
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+} = require('../controller/itemController');
 
-const {authentication}=require("../mid/authentication")
+const { authentication } = require('../mid/authentication');
+const { createOrder, updateOrder } = require('../controller/orderController');
 
-router.post("/createUser",createUser)
-router.post("/loginUser",loginUser)
+router.post('/createUser', createUser);
+router.post('/loginUser', loginUser);
 
-router.post("/createProduct",authentication,createProduct)
-router.get("/getProduct/:productId?",authentication,getProduct)
-router.post("/updateProduct/:productId",authentication,updateProduct)
-router.delete("/deleteProduct/:productId",authentication,deleteProduct)
+//without auth
+router.post('/createProduct', createItem);
+router.get('/getItem/:itemId?', getItem);
+router.post('/updateItem/:itemId', updateItem);
+router.delete('/deleteItem/:itemId', deleteItem);
 
-router.post("/createWishList",authentication,createWishList)
-router.get("/getWishList/:userId",authentication,getWishList)
+//with auth
+router.post('/auth/createProduct', authentication, createItem);
+router.get('/auth/getProduct/:productId?', authentication, getItem);
+router.post('/auth/updateProduct/:productId', authentication, updateItem);
+router.delete('/auth/deleteProduct/:productId', authentication, deleteItem);
 
-module.exports=router
+router.post('/createOrder', createOrder);
+router.post('/updateOrder', updateOrder);
+
+router.post('/payment', payment);
+
+module.exports = router;
