@@ -27,9 +27,15 @@ router.get('/auth/getProduct/:productId?', authentication, getItem);
 router.post('/auth/updateProduct/:productId', authentication, updateItem);
 router.delete('/auth/deleteProduct/:productId', authentication, deleteItem);
 
+//for order
 router.post('/createOrder', createOrder);
 router.post('/updateOrder', updateOrder);
 
+//for auth order
+router.post('/createOrder', authentication, createOrder);
+router.post('/updateOrder', authentication, updateOrder);
+
+//for cash payment
 router.post('/payment', payment);
 
 module.exports = router;
