@@ -163,7 +163,7 @@ const deleteItem = async (req, res) => {
     let updateData = await productModel.findByIdAndDelete(productId);
     return res
       .status(200)
-      .send({ status: true, message: 'success', updateData: updateData });
+      .send({ status: true, message: 'successfully DELETED' });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
