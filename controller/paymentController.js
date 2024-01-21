@@ -40,8 +40,10 @@ const payment = async (req, res) => {
       await isOrderExist.save();
 
       if (payment > paying || payment < paying)
-        return res.status(400).send({ message: 'please pay same' });
-      return res.status(400).send({ message: 'thanks for pay', isOrderExist });
+        return res
+          .status(400)
+          .send({ message: `please pay same : ${payment}` });
+      return res.status(400).send({ message: 'Thanks for pay' });
     }
   } catch (error) {
     return res

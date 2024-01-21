@@ -1,9 +1,7 @@
 const express= require("express");
 let app= express();
 const {mongoose}=require("mongoose");
-const multer = require("multer")
 
-app.use(multer().any())
 app.use(express.json());
 
 mongoose.connect("mongodb+srv://123:1234@cluster0.pf4v08v.mongodb.net/StreetDine",{
