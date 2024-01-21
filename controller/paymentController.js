@@ -26,6 +26,7 @@ const payment = async (req, res) => {
       let payment = 0;
       for (let a = 0; a < isOrderExist.orderItems.length; a++) {
         const item = isOrderExist.orderItems[a];
+        if (item == null) continue;
         const itemQty = item.qty;
         const itemId = item.id;
 
