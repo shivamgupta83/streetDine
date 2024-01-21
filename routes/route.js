@@ -16,24 +16,24 @@ router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
 
 //without auth
-router.post('/createProduct', createItem);
+router.post('/createItem', createItem);
 router.get('/getItem/:itemId?', getItem);
 router.post('/updateItem/:itemId', updateItem);
 router.delete('/deleteItem/:itemId', deleteItem);
 
 //with auth
-router.post('/auth/createProduct', authentication, createItem);
-router.get('/auth/getProduct/:productId?', authentication, getItem);
-router.post('/auth/updateProduct/:productId', authentication, updateItem);
-router.delete('/auth/deleteProduct/:productId', authentication, deleteItem);
+router.post('/auth/createitem', authentication, createItem);
+router.get('/auth/getItem/:itemId?', authentication, getItem);
+router.post('/auth/updateItem/:itemId', authentication, updateItem);
+router.delete('/auth/deleteItem/:itemId', authentication, deleteItem);
 
 //for order
 router.post('/createOrder', createOrder);
 router.post('/updateOrder', updateOrder);
 
 //for auth order
-router.post('/createOrder', authentication, createOrder);
-router.post('/updateOrder', authentication, updateOrder);
+router.post('/auth/createOrder', authentication, createOrder);
+router.post('/auth/updateOrder', authentication, updateOrder);
 
 //for cash payment
 router.post('/payment', payment);
