@@ -1,3 +1,6 @@
+
+                                                       Clone project in your local pc.
+
 #step 1 - 
 RUN 
 
